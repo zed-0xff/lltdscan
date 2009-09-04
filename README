@@ -1,0 +1,54 @@
+= DESCRIPTION =
+
+lltdscan - Scan for LLTD-enabled hosts on your network.
+
+LLTD is a Link Layer Topology Discovery Protocol.
+protocol specs are available from Microsoft at 
+http://www.microsoft.com/whdc/connect/Rally/LLTD-spec.mspx
+
+Run "lltdscan -i em0" on your FreeBSD or Linux-based pc - and you'll
+see all your neighbours that have the MS Windows installed and have
+not unchecked the "Link-Layer Topology Discovery Responder" in their
+Network Connection settings.
+
+Works starting from XP(sp3 ?), works on Vista, needs testing on W2k7.
+
+IMPORTANT: LLTD is a level 2 protocol - i.e. it not runs over ip or tcp or udp
+or anything. So, you can get other PC's info even if they live in different IP
+subnets, or even if they don't have any valid IP address but have 169.254.x.y
+self-assigned IP.
+
+
+= INSTALLATION =
+
+FreeBSD: gmake && gmake install
+Linux:   make && cp lltdscan /usr/sbin/ && cp lltdscan.8 /usr/share/man/man8/
+
+
+= EXAMPLES =
+
+#sudo ./lltdscan -t1300             
+interface eth0
+101 bytes from 00:01:33:ed:54:a1 (192.168.123.12 ): time=929 ms name="XZ"
+found 1 hosts in 1.303 seconds
+
+
+#sudo ./lltdscan -t1300 -v          
+interface eth0
+101 bytes from 00:01:33:ed:54:a1 (192.168.123.12 ): time=929 ms name="XZ"
+     Host ID: 00 01 ee ff 22 a1 
+    Charact.: 20 00 00 00       (full-duplex)
+       Media: 00 00 00 06       (Ethernet)
+   Perf.cntr: 00 00 00 00 00 36 9e 99 
+  Link speed: 100 Mbit/s
+        Name: 31 00 43 00 
+         QoS: 60 00 00 00       (802.1q-support, 802.1p-support)
+
+found 1 hosts in 1.302 seconds
+
+
+= CONTACTS =
+
+zed [dot] 0xff [at] gmail.com
+http://github.com/zed-0xff/lltdscan
+http://zed.0xff.me/
