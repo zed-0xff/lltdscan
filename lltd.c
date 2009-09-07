@@ -86,6 +86,53 @@ u_char* lltd_extract_name(const u_char*p){
 	return NULL;
 }
 
+u_char* lltd_extract_unicode_name(const u_char*p){
+	u_char l;
+	static u_char namebuf[0x40];
+
+	while(*p){
+		l = p[1];
+		if( *p == 0x0F ){
+			int namelen = l/2;
+			p += 2;
+			u_char *pbuf;
+			/* convert ucs-2le to utf-8 */
+			/* FIXME: maybe, this is utf-16le, not ucs-2le? */
+			for(pbuf=namebuf; namelen>0; namelen--){
+				unsigned short ch = *p++;
+				ch |= ((unsigned short)*p++) << 8;
+				if(ch >= 0xd800 && ch <= 0xdfff){
+					static int once;
+					if(!once++)
+						fprintf(stderr, "Warning: utf-16 unsupported, please report\n");
+				}
+				if(ch >= 0x800){
+					if(pbuf - namebuf + 3 >= sizeof(namebuf))
+						break;
+					*pbuf++ = 0xe0 | ((ch >> 12) & 0x0f);
+					*pbuf++ = 0x80 | ((ch >>  6) & 0x3f);
+					*pbuf++ = 0x80 | ( ch        & 0x3f);
+					continue;
+				}
+				if(ch >= 0x80){
+					if(pbuf - namebuf + 2 >= sizeof(namebuf))
+						break;
+					*pbuf++ = 0xc0 | ((ch >>  6) & 0x1f);
+					*pbuf++ = 0x80 | ( ch        & 0x3f);
+					continue;
+				}
+				if (pbuf - namebuf + 1 >= sizeof(namebuf))
+					break;
+				*pbuf++ = ch;
+			}
+			*pbuf = 0;
+			return namebuf;
+		}
+		p += l + 2;
+	}
+	return NULL;
+}
+
 u_char* lltd_extract_ip(const u_char*p){
 	u_char l;
 	static u_char buf[20];

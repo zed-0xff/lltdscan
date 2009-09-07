@@ -5,12 +5,14 @@
 lltdscan \- scan for LLTD-enabled hosts on a network interface\&.
 .PP 
 .SH "SYNOPSIS"
-\fBlltdscan\fP [-i \fIiface\fP] [-t \fItimeout\fP] [-v] [-v] [aa:bb:cc:dd:ee:ff]
+\fBlltdscan\fP [-i \fIiface\fP] [-t \fItimeout\fP] [-u] [-v] [-v] [aa:bb:cc:dd:ee:ff]
 .PP 
 .SH "DESCRIPTION"
 The \fIlltdscan\fP utility sends broadcast \fBLLTD\fP request on specified (or default) interface. And then listens for \fBtimeout\fP milliseconds for responses\&.
 .PP 
 Add one or two \fB-v\fP options to increase verbosity\&.
+.PP 
+Add \fB-u\fP option to show machine names in UTF-8\&.
 .PP 
 Also you can specify exactly one \fBMAC\fP address as last argument - and \fBlltdscan\fP will exit as soon as it receives first reply from specified host\&.
 .SH "LLTD PROTOCOL"

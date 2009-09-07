@@ -10,7 +10,11 @@
 
 void usage(char *name) {
         fprintf(stderr,
-                "usage: %s [-i iface] [-t timeout] [-v] [-v] [aa:bb:cc:dd:ee:ff]\n",
+                "usage: %s [-i iface] [-t timeout] [-u] [-v] [-v] [aa:bb:cc:dd:ee:ff]\n\n"
+		"\t timeout is in milliseconds;\n"
+		"\t add -u to show machine names in UTF-8;\n"
+		"\t add -v or -vv increase verbosity;\n"
+		"\t last argument is an optional single MAC-address of interest.\n",
                 name);
 }
 
@@ -18,6 +22,7 @@ static int do_stop=0;
 static timer_t timer_id;
 static struct timeval start_time;
 static int verbose = 0;
+static int unicode = 0;
 
 static uint64_t hosts[200];
 static int nhosts = 0;
@@ -79,7 +84,7 @@ void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *pa
 		mac,
 		lltd_extract_ip(packet+46),
 		tv_diff2msec(&header->ts),
-		lltd_extract_name(packet+46)
+		unicode ? lltd_extract_unicode_name(packet+46) : lltd_extract_name(packet+46)
 	);
 
 	if(verbose == 1){
@@ -124,7 +129,7 @@ int main (int argc, char *argv[]){
 	memset(&tspec, 0, sizeof(tspec));
 	tspec.it_value.tv_sec = 3;
 
-        while ((c = getopt(argc, argv, "t:i:hv")) != EOF) {
+        while ((c = getopt(argc, argv, "t:i:hvu")) != EOF) {
                 switch (c) {
                 case 'i': // interface
                         dev = optarg;
@@ -141,6 +146,9 @@ int main (int argc, char *argv[]){
                         break;
                 case 'v': // verbosity
                         verbose++;
+                        break;
+                case 'u': // unicode support
+                        unicode = 1;
                         break;
                 case 'h': // show usage
                         usage(argv[0]);
