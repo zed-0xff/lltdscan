@@ -47,6 +47,11 @@ interface eth0
 found 1 hosts in 1.302 seconds
 
 
+= LICENSE =
+
+Public Domain.
+
+
 = CONTACTS =
 
 zed [dot] 0xff [at] gmail.com
