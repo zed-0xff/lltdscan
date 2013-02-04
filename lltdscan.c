@@ -4,6 +4,8 @@
 #include <signal.h>
 #include <libnet.h>
 
+#include <netinet/if_ether.h>
+
 #include "lltd.c"
 
 #define PCAP_PERIOD 100 // pcap kernel poll period, ms
@@ -212,7 +214,8 @@ int main (int argc, char *argv[]){
 
         eth_ptag = libnet_build_ethernet(
                                          hwdst, /* ethernet destination */
-                                         "",    /* ethernet source */
+                                         ha->ether_addr_octet,
+                                                        /* ethernet source */
                                          0x88d9,        /* protocol type */
                                          buf,       /* payload */
                                          18,    /* payload size */
